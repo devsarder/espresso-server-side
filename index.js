@@ -30,6 +30,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const coffeeCollection = client.db("coffeeDB").collection("coffee");
+    const userCollection = client.db("userDB").collection("user");
     // posting coffee collection
     app.post("/coffee", async (req, res) => {
       const newCoffee = req.body;
@@ -37,6 +38,29 @@ async function run() {
       res.send(result);
 
       console.log(newCoffee);
+    });
+    // for user collection
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+
+      console.log(newUser);
+    });
+    // get user collection
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // delete user
+    // delete user
+    app.delete("/users/:id", async (req, res) => {
+      const userId = req.params.id;
+      const query = { _id: new ObjectId(userId) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
     });
     // get coffee collection
     app.get("/coffee", async (req, res) => {
@@ -73,7 +97,7 @@ async function run() {
       res.send(result);
     });
 
-    // delete user
+    // delete coffee
     app.delete("/coffee/:id", async (req, res) => {
       const coffeeId = req.params.id;
       const query = { _id: new ObjectId(coffeeId) };
