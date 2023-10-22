@@ -47,6 +47,19 @@ async function run() {
 
       console.log(newUser);
     });
+    app.patch("/users", async (req, res) => {
+      const user = req.body;
+      console.log(user);
+      const filter = { email: user.email };
+      // console.log(filter);
+      const updateDoc = {
+        $set: {
+          lastSignInAt: user.lastSignInAt,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
     // get user collection
     app.get("/users", async (req, res) => {
       const cursor = userCollection.find();
